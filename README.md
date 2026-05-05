@@ -1,5 +1,12 @@
 # YouthAI Web Application Setup
 
+## 👥 Team (UPM Hackathon 2026)
+
+- Adam A. Tay – Project Manager  
+- Muhammad Alif Azamrin – Developer  
+- Nabhan Hakimi – QA & Database  
+- Muhammad Aziem Asriel – System Design & UI/UX  
+
 ## Prerequisites
 
 1. **XAMPP** (includes Apache, MySQL, and phpMyAdmin)
@@ -63,10 +70,3 @@ This is a development setup. For production:
 - Implement password hashing (bcrypt)
 - Use HTTPS
 - Add input validation and sanitization
-
-## 👥 Team (UPM Hackathon 2026)
-
-- Adam A. Tay – Project Manager  
-- Muhammad Alif Azamrin – Developer  
-- Nabhan Hakimi – QA & Database  
-- Muhammad Aziem Asriel – System Design & UI/UX  
