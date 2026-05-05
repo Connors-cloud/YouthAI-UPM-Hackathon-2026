@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' else '' }}" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="{{ 'active' if page == 'chat' else '' }}" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="{{ 'active' if page == 'mood' else '' }}" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="{{ 'active' if page == 'career' else '' }}" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="{{ 'active' if page == 'programs' else '' }}" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="{{ 'active' if page == 'profile' else '' }}" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            {% if page == 'dashboard' %}
+            <section class="dash-header banner-pink">
+                <h1>Hi, {{ username }}!</h1>
+                <p>{{ email }} | {{ now }} | Let's make it a great day 🌟</p>
+            </section>
+            <section class="card-grid">
+                <article class="dash-card pastel-teal"><h3>Mood Avg</h3><p>{{ mood_avg }}</p></article>
+                <article class="dash-card pastel-yellow"><h3>Programs Joined</h3><p>{{ registered|length }}</p></article>
+                <article class="dash-card pastel-lav"><h3>AI Mode</h3><p>Gemini + Local Fallback</p></article>
+                <article class="dash-card pastel-mint"><h3>Daily Tip</h3><p>{{ daily_tip }}</p></article>
+            </section>
+            <section class="panel">
+                <h2>Quick Mood Check ☀️</h2>
+                <div class="mood-row">
+                    {% for mood_name, mood_info in {'Terrible': {'emoji':'😢'}, 'Bad': {'emoji':'😟'}, 'Okay': {'emoji':'😐'}, 'Good': {'emoji':'🙂'}, 'Great': {'emoji':'😊'}, 'Amazing': {'emoji':'😄'}}.items() %}
+                    <form method="post" action="{{ url_for('mood_quick', mood_value=mood_name) }}">
+                        <button class="mood-chip" type="submit">{{ mood_info.emoji }} {{ mood_name }}</button>
+                    </form>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if page == 'chat' %}
+            <section class="panel">
+                <h2>AI Chat</h2>
+                <form method="post" action="{{ url_for('chat_clear') }}" class="inline-right" data-animate-submit>
+                    <button type="submit">Clear Chat</button>
+                </form>
+                <div class="chat-box">
+                    {% for item in chat_msgs %}
+                    <div class="msg {{ item.sender }}">{{ item.msg }}</div>
+                    {% endfor %}
+                </div>
+                <form method="post" action="{{ url_for('chat_send') }}" class="inline-form" data-animate-submit data-no-exit-animation>
+                    <input name="message" placeholder="Type your message..." required>
+                    <button type="submit">Send</button>
+                </form>
+            </section>
+            {% endif %}
+
+            {% if page == 'mood' %}
+            <section class="panel">
+                <h2>Mood Tracker</h2>
+                <form method="post" action="{{ url_for('mood_save') }}" class="inline-form" data-animate-submit>
+                    <select name="mood" required>
+                        {% for mood_name in ['Terrible','Bad','Okay','Good','Great','Amazing'] %}
+                        <option value="{{ mood_name }}">{{ mood_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input name="note" placeholder="Optional note">
+                    <button type="submit">Save Mood</button>
+                </form>
+                <div class="history">
+                    {% for item in mood_history %}
+                    <div class="result-item">{{ item.date }} - {{ item.mood }} {{ {'Terrible':'😢','Bad':'😟','Okay':'😐','Good':'🙂','Great':'😊','Amazing':'😄'}[item.mood] }}{% if item.note %} - {{ item.note }}{% endif %}</div>
+                    {% endfor %}
+                </div>
+                <div class="chart-wrap">
+                    <h3>Your Mood Journey (Last 7 Days) 📈</h3>
+                    <canvas id="moodChart" height="120"></canvas>
+                </div>
+            </section>
+            {% endif %}
+
+            {% if page == 'career' %}
+            <section class="panel career-panel">
+                <h2>Career Guide 🌈</h2>
+                <p class="friendly-lead">A fun little check-in to discover careers that fit your energy, strengths, and purpose.</p>
+                <div class="career-badges">
+                    <span>✨ Friendly design</span>
+                    <span>💡 Daily self-care</span>
+                    <span>🎯 Motivating steps</span>
+                    <span>😊 Easy mood check-ins</span>
+                </div>
+                <div class="self-care-card">
+                    <h3>Today's Self-Care Boost</h3>
+                    <p>{{ self_care_tip }}</p>
+                </div>
+                <form method="post" action="{{ url_for('career_submit') }}" data-animate-submit>
+                    {% for q in career_q %}
+                    {% set q_idx = loop.index0 %}
+                    <div class="qblock">
+                        <strong>{{ q.q }} 💬</strong>
+                        {% for opt in q.opts %}
+                        <label class="career-opt"><input type="radio" name="q{{ q_idx }}" value="{{ opt[1] }}" required> {{ opt[0] }}</label>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit">Get My Cheerful Matches 🚀</button>
+                </form>
+                {% if career_scores %}
+                <div class="history">
+                    <h3>Your Top Matches 🎉</h3>
+                    {% for name, score in career_scores.items()|sort(attribute='1', reverse=True) %}
+                    <div class="result-item"><strong>{{ name }}</strong> ({{ score }}/3): {{ careers[name]|join(', ') }}</div>
+                    {% endfor %}
+                    <p class="friendly-note">You are growing at your own pace. Keep building healthy daily habits and your career path will become clearer. 🌱</p>
+                </div>
+                {% endif %}
+            </section>
+            {% endif %}
+
+            {% if page == 'programs' %}
+            <section class="panel">
+                <h2>Programs</h2>
+                <form method="get" action="{{ url_for('programs') }}" class="inline-form" data-animate-submit>
+                    <input name="q" value="{{ search }}" placeholder="Search programs...">
+                    <select name="cat">
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {{ 'selected' if selected_cat == cat else '' }}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Filter</button>
+                </form>
+                {% for p in programs %}
+                <div class="program-item">
+                    <div>
+                        <strong>{{ p.title }}</strong>
+                        <span>{{ p.cat }} | {{ p.date }} | {{ p.loc }} | {{ p.reg }}/{{ p.slots }}</span>
+                    </div>
+                    <span class="cat-pill" style="background: {{ cat_col.get(p.cat, '#7EC8C8') }}">{{ p.cat }}</span>
+                    {% if p.id in registered %}
+                    <span class="joined">Joined</span>
+                    {% else %}
+                    <form method="post" action="{{ url_for('join_program', pid=p.id) }}" data-animate-submit data-no-exit-animation>
+                        <button type="submit">Join</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if page == 'profile' %}
+            <section class="panel">
+                <h2>Profile</h2>
+                <p><strong>Name:</strong> {{ username }}</p>
+                <p><strong>Email:</strong> {{ email }}</p>
+                <p><strong>Mood Logs:</strong> {{ full_mood_history|length }}</p>
+                <p><strong>Programs Joined:</strong> {{ registered|length }}</p>
+                <p><strong>AI Messages:</strong> {{ chat_msgs|length }}</p>
+                <p><strong>AI Provider:</strong> Gemini</p>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+    {% if page == 'mood' %}
+    <script>
+        const moodLabels = {{ mood_labels|tojson }};
+        const moodValues = {{ mood_values|tojson }};
+        const moodEmojis = {{ mood_emojis|tojson }};
+        const ctx = document.getElementById("moodChart");
+        if (ctx && moodLabels.length > 0) {
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: moodLabels,
+                    datasets: [{
+                        label: "Mood Score",
+                        data: moodValues,
+                        borderColor: "#FF8A9E",
+                        backgroundColor: "rgba(255, 138, 158, 0.15)",
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 5,
+                        pointBackgroundColor: "#B8B5FF",
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 1,
+                            max: 6,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    const map = {1:"😢",2:"😟",3:"😐",4:"🙂",5:"😊",6:"😄"};
+                                    return map[value] || value;
+                                }
+                            },
+                            grid: { color: "#f1e7ef" }
+                        },
+                        x: { grid: { color: "#f4eef7" } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    return `Mood: ${moodEmojis[idx]} (score ${context.parsed.y})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    {% endif %}
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

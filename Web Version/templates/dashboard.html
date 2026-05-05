@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="active" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            <section class="dash-header banner-pink">
+                <h1>Hi, {{ username }}!</h1>
+                <p>{{ email }} | {{ now }} | Let's make it a great day 🌟</p>
+            </section>
+            <section class="card-grid">
+                <article class="dash-card pastel-teal"><h3>Mood Avg</h3><p>{{ mood_avg }}</p></article>
+                <article class="dash-card pastel-yellow"><h3>Programs Joined</h3><p>{{ registered|length }}</p></article>
+                <article class="dash-card pastel-lav"><h3>AI Mode</h3><p>Gemini + Local Fallback</p></article>
+                <article class="dash-card pastel-mint"><h3>Daily Tip</h3><p>{{ daily_tip }}</p></article>
+            </section>
+            <section class="panel">
+                <h2>Quick Mood Check ☀️</h2>
+                <div class="mood-row">
+                    {% for mood_name, mood_info in {'Terrible': {'emoji':'😢'}, 'Bad': {'emoji':'😟'}, 'Okay': {'emoji':'😐'}, 'Good': {'emoji':'🙂'}, 'Great': {'emoji':'😊'}, 'Amazing': {'emoji':'😄'}}.items() %}
+                    <form method="post" action="{{ url_for('mood_quick', mood_value=mood_name) }}">
+                        <button class="mood-chip" type="submit">{{ mood_info.emoji }} {{ mood_name }}</button>
+                    </form>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

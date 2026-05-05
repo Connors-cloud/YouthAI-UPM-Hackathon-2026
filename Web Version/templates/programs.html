@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Programs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="active" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            <section class="panel">
+                <h2>Programs</h2>
+                <form method="get" action="{{ url_for('programs') }}" class="inline-form" data-animate-submit>
+                    <input name="q" value="{{ search }}" placeholder="Search programs...">
+                    <select name="cat">
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {{ 'selected' if selected_cat == cat else '' }}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Filter</button>
+                </form>
+                {% for p in programs %}
+                <div class="program-item">
+                    <div>
+                        <strong>{{ p.title }}</strong>
+                        <span>{{ p.cat }} | {{ p.date }} | {{ p.loc }} | {{ p.reg }}/{{ p.slots }}</span>
+                    </div>
+                    <span class="cat-pill" style="background: {{ cat_col.get(p.cat, '#7EC8C8') }}">{{ p.cat }}</span>
+                    {% if p.id in registered %}
+                    <span class="joined">Joined</span>
+                    {% else %}
+                    <form method="post" action="{{ url_for('join_program', pid=p.id) }}" data-animate-submit data-no-exit-animation>
+                        <button type="submit">Join</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

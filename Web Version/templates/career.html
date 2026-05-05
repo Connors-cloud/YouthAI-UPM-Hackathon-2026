@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Career Guide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="active" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            <section class="panel career-panel">
+                <h2>Career Guide 🌈</h2>
+                <p class="friendly-lead">A fun little check-in to discover careers that fit your energy, strengths, and purpose.</p>
+                <div class="career-badges">
+                    <span>✨ Friendly design</span>
+                    <span>💡 Daily self-care</span>
+                    <span>🎯 Motivating steps</span>
+                    <span>😊 Easy mood check-ins</span>
+                </div>
+                <div class="self-care-card">
+                    <h3>Today's Self-Care Boost</h3>
+                    <p>{{ self_care_tip }}</p>
+                </div>
+                <form method="post" action="{{ url_for('career_submit') }}" data-animate-submit>
+                    {% for q in career_q %}
+                    {% set q_idx = loop.index0 %}
+                    <div class="qblock">
+                        <strong>{{ q.q }} 💬</strong>
+                        {% for opt in q.opts %}
+                        <label class="career-opt"><input type="radio" name="q{{ q_idx }}" value="{{ opt[1] }}" required> {{ opt[0] }}</label>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit">Get AI Program Suggestions 🎯</button>
+                </form>
+                {% if career_scores %}
+                <div class="history">
+                    <h3>Your Top Matches 🎉</h3>
+                    {% for name, score in career_scores.items()|sort(attribute='1', reverse=True) %}
+                    <div class="result-item"><strong>{{ name }}</strong> ({{ score }}/3): {{ careers[name]|join(', ') }}</div>
+                    {% endfor %}
+                    <p class="friendly-note">You are growing at your own pace. Keep building healthy daily habits and your career path will become clearer. 🌱</p>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

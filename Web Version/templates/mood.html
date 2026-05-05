@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Mood Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="active" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            <section class="panel">
+                <h2>Mood Tracker</h2>
+                <form method="post" action="{{ url_for('mood_save') }}" class="inline-form" data-animate-submit>
+                    <select name="mood" required>
+                        {% for mood_name in ['Terrible','Bad','Okay','Good','Great','Amazing'] %}
+                        <option value="{{ mood_name }}">{{ mood_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input name="note" placeholder="Optional note">
+                    <button type="submit">Save Mood</button>
+                </form>
+                <div class="history">
+                    {% for item in mood_history %}
+                    <div class="result-item">{{ item.date }} - {{ item.mood }} {{ {'Terrible':'😢','Bad':'😟','Okay':'😐','Good':'🙂','Great':'😊','Amazing':'😄'}[item.mood] }}{% if item.note %} - {{ item.note }}{% endif %}</div>
+                    {% endfor %}
+                </div>
+                <div class="chart-wrap">
+                    <h3>Your Mood Journey (Last 7 Days) 📈</h3>
+                    <canvas id="moodChart" height="120"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        const moodLabels = {{ mood_labels|tojson }};
+        const moodValues = {{ mood_values|tojson }};
+        const moodEmojis = {{ mood_emojis|tojson }};
+        const ctx = document.getElementById("moodChart");
+        if (ctx && moodLabels.length > 0) {
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: moodLabels,
+                    datasets: [{
+                        label: "Mood Score",
+                        data: moodValues,
+                        borderColor: "#FF8A9E",
+                        backgroundColor: "rgba(255, 138, 158, 0.15)",
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 5,
+                        pointBackgroundColor: "#B8B5FF",
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 1,
+                            max: 6,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    const map = {1:"😢",2:"😟",3:"😐",4:"🙂",5:"😊",6:"😄"};
+                                    return map[value] || value;
+                                }
+                            },
+                            grid: { color: "#f1e7ef" }
+                        },
+                        x: { grid: { color: "#f4eef7" } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    return `Mood: ${moodEmojis[idx]} (score ${context.parsed.y})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

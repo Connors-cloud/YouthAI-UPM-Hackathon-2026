@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-page page-preload">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <h2>YouthAI</h2>
+            <a href="{{ url_for('dashboard') }}" class="" data-nav-link>Dashboard</a>
+            <a href="{{ url_for('chat') }}" class="active" data-nav-link>AI Chat (Gemini)</a>
+            <a href="{{ url_for('mood') }}" class="" data-nav-link>Mood Tracker</a>
+            <a href="{{ url_for('career') }}" class="" data-nav-link>Career Guide</a>
+            <a href="{{ url_for('programs') }}" class="" data-nav-link>Programs</a>
+            <a href="{{ url_for('profile') }}" class="" data-nav-link>Profile</a>
+            <form method="post" action="{{ url_for('logout') }}" class="sidebar-logout" data-animate-submit>
+                <button type="submit">Log Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content page-stage">
+            <section class="panel">
+                <h2>AI Chat</h2>
+                <form method="post" action="{{ url_for('chat_clear') }}" class="inline-right" data-animate-submit>
+                    <button type="submit">Clear Chat</button>
+                </form>
+                <div class="chat-box" id="chatBox">
+                    {% for item in chat_msgs %}
+                    <div class="msg {{ item.sender }}">{{ item.msg }}</div>
+                    {% endfor %}
+                </div>
+                <form method="post" action="{{ url_for('chat_send') }}" class="inline-form" data-animate-submit data-no-exit-animation>
+                    <input name="message" placeholder="Type your message..." required>
+                    <button type="submit">Send</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script>
+        // Auto-scroll chat to bottom
+        const chatBox = document.getElementById('chatBox');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>

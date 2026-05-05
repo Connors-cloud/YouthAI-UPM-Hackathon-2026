@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouthAI Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="login-page">
+    <div class="bg-container" id="bgContainer">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+
+        <form class="login-card" id="loginForm" method="post" action="{{ url_for('login') }}">
+            <h2>☁️ YouthAI ☁️</h2>
+            <p class="login-subtitle">Growth & Wellbeing Platform</p>
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button class="login-btn" id="loginBtn" type="submit">Let's Go! 🚀</button>
+            <p class="login-note">
+                <a href="{{ url_for('signup') }}">New user? Sign up here</a><br>
+                🌈 Your AI buddy for growth 🌈
+            </p>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

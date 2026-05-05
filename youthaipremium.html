@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouthAI - Growth & Wellbeing Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --bg-primary: #FFFBF5;
+  --bg-secondary: #FFF3E8;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FFFAF5;
+  --bg-input: #F9FAFB;
+  --text-primary: #1C1917;
+  --text-secondary: #57534E;
+  --text-muted: #A8A29E;
+  --accent: #059669;
+  --accent-light: #D1FAE5;
+  --accent-dark: #047857;
+  --accent-rgb: 5,150,105;
+  --secondary: #EA580C;
+  --secondary-light: #FFF7ED;
+  --secondary-rgb: 234,88,12;
+  --gold: #D97706;
+  --gold-light: #FEF3C7;
+  --gold-rgb: 217,119,6;
+  --rose: #E11D48;
+  --rose-light: #FFE4E6;
+  --rose-rgb: 225,29,72;
+  --border: #E7E5E4;
+  --border-focus: var(--accent);
+  --shadow-xs: 0 1px 2px rgba(28,25,23,0.04);
+  --shadow-sm: 0 1px 3px rgba(28,25,23,0.06),0 1px 2px rgba(28,25,23,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(28,25,23,0.06),0 2px 4px -2px rgba(28,25,23,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(28,25,23,0.06),0 4px 6px -4px rgba(28,25,23,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(28,25,23,0.08),0 8px 10px -6px rgba(28,25,23,0.04);
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  --sidebar-w: 240px;
+  --topbar-h: 64px;
+  --tabbar-h: 68px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.dark {
+  --bg-primary: #0C0F1A;
+  --bg-secondary: #141828;
+  --bg-card: #1A1F35;
+  --bg-card-hover: #222842;
+  --bg-input: #141828;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --accent: #34D399;
+  --accent-light: #064E3B;
+  --accent-dark: #6EE7B7;
+  --accent-rgb: 52,211,153;
+  --secondary: #FB923C;
+  --secondary-light: #431407;
+  --secondary-rgb: 251,146,60;
+  --gold: #FCD34D;
+  --gold-light: #422006;
+  --gold-rgb: 252,211,77;
+  --rose: #FB7185;
+  --rose-light: #4C0519;
+  --rose-rgb: 251,113,133;
+  --border: #2A3050;
+  --border-focus: var(--accent);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.35);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.4);
+}
+
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background var(--transition),color var(--transition);
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit;outline:none}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:var(--radius-full)}
+
+/* ===== Auth Screen ===== */
+#screen-auth{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#059669 0%,#0D9488 30%,#0891B2 60%,#0E7490 100%);
+  position:relative;
+  overflow:hidden;
+  padding:20px;
+}
+#screen-auth.hidden{display:none}
+.auth-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(60px);
+  opacity:0.4;
+  animation:orbFloat 8s ease-in-out infinite;
+}
+.auth-orb:nth-child(1){width:300px;height:300px;background:#34D399;top:-80px;left:-80px;animation-delay:0s}
+.auth-orb:nth-child(2){width:250px;height:250px;background:#FBBF24;bottom:-60px;right:-60px;animation-delay:-3s}
+.auth-orb:nth-child(3){width:200px;height:200px;background:#FB923C;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-5s}
+.auth-orb:nth-child(4){width:180px;height:180px;background:#A78BFA;top:20%;right:10%;animation-delay:-2s}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  25%{transform:translate(30px,-40px) scale(1.1)}
+  50%{transform:translate(-20px,30px) scale(0.95)}
+  75%{transform:translate(40px,20px) scale(1.05)}
+}
+.auth-card{
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(20px);
+  border-radius:var(--radius-xl);
+  padding:40px 36px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.15);
+  position:relative;
+  z-index:2;
+  animation:authCardIn 0.6s ease-out;
+}
+@keyframes authCardIn{from{opacity:0;transform:translateY(30px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dark .auth-card{background:rgba(26,31,53,0.95)}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo .logo-icon{
+  width:56px;height:56px;
+  background:linear-gradient(135deg,#059669,#0D9488);
+  border-radius:var(--radius-md);
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#fff;font-size:24px;margin-bottom:12px;
+  box-shadow:0 4px 12px rgba(5,150,105,0.3);
+}
+.auth-logo h1{font-size:24px;font-weight:800;color:#059669;letter-spacing:-0.5px}
+.auth-logo p{font-size:14px;color:var(--text-secondary);margin-top:4px}
+.auth-tabs{display:flex;gap:4px;background:var(--bg-input);border-radius:var(--radius-sm);padding:4px;margin-bottom:24px}
+.auth-tab{
+  flex:1;padding:10px;text-align:center;font-weight:700;font-size:14px;
+  border-radius:var(--radius-xs);color:var(--text-secondary);
+  transition:all var(--transition);
+}
+.auth-tab.active{background:var(--bg-card);color:var(--accent);box-shadow:var(--shadow-sm)}
+.auth-form{display:none}
+.auth-form.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.form-group{margin-bottom:16px;position:relative}
+.form-group label{display:block;font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;transition:color var(--transition)}
+.input-wrap input,.input-wrap select,.input-wrap textarea{
+  width:100%;padding:12px 14px 12px 42px;
+  background:var(--bg-input);border:2px solid var(--border);
+  border-radius:var(--radius-sm);font-size:15px;color:var(--text-primary);
+  transition:all var(--transition);
+}
+.input-wrap input:focus,.input-wrap select:focus,.input-wrap textarea:focus{
+  border-color:var(--accent);background:var(--bg-card);
+  box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.1);
+}
+.input-wrap input:focus+i,.input-wrap select:focus+i,.input-wrap textarea:focus+i{color:var(--accent)}
+.input-wrap.no-icon input,.input-wrap.no-icon select,.input-wrap.no-icon textarea{padding-left:14px}
+.form-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px}
+.form-row label{display:flex;align-items:center;gap:6px;color:var(--text-secondary);cursor:pointer}
+.form-row label input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+.form-row a{color:var(--accent);font-weight:700}
+.form-row a:hover{text-decoration:underline}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 24px;border-radius:var(--radius-sm);font-size:15px;font-weight:700;
+  transition:all var(--transition);position:relative;overflow:hidden;
+}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(var(--accent-rgb),0.3)}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(var(--accent-rgb),0.4);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg-input);color:var(--text-primary);border:2px solid var(--border)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--rose);color:#fff;box-shadow:0 4px 12px rgba(var(--rose-rgb),0.3)}
+.btn-sm{padding:8px 16px;font-size:13px;border-radius:var(--radius-xs)}
+.btn-full{width:100%}
+.btn-icon{width:40px;height:40px;padding:0;border-radius:var(--radius-sm)}
+.form-error{font-size:12px;color:var(--rose);margin-top:4px;display:none}
+.form-error.show{display:block;animation:fadeIn 0.2s ease}
+
+/* ===== App Shell ===== */
+#app-shell{display:none;min-height:100vh}
+#app-shell.active{display:flex}
+.sidebar{
+  width:var(--sidebar-w);height:100vh;position:fixed;left:0;top:0;
+  background:var(--bg-card);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:20px 12px;
+  transition:all var(--transition);z-index:40;
+}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:28px}
+.sidebar-brand .s-icon{
+  width:40px;height:40px;background:linear-gradient(135deg,#059669,#0D9488);
+  border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;flex-shrink:0;
+}
+.sidebar-brand span{font-size:18px;font-weight:800;color:var(--accent)}
+.sidebar-nav{flex:1;display:flex;flex-direction:column;gap:4px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border-radius:var(--radius-sm);font-size:14px;font-weight:600;
+  color:var(--text-secondary);transition:all var(--transition);cursor:pointer;
+}
+.nav-item:hover{background:var(--bg-secondary);color:var(--text-primary)}
+.nav-item.active{background:rgba(var(--accent-rgb),0.1);color:var(--accent)}
+.nav-item i{width:20px;text-align:center;font-size:16px}
+.nav-item .badge{
+  margin-left:auto;background:var(--rose);color:#fff;font-size:11px;
+  padding:2px 7px;border-radius:var(--radius-full);font-weight:800;
+}
+.sidebar-footer{padding-top:12px;border-top:1px solid var(--border)}
+.sidebar-user{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-radius:var(--radius-sm);cursor:pointer;transition:background var(--transition);
+}
+.sidebar-user:hover{background:var(--bg-secondary)}
+.sidebar-user .avatar{
+  width:36px;height:36px;border-radius:var(--radius-full);
+  background:linear-gradient(135deg,var(--accent),var(--secondary));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:14px;flex-shrink:0;
+}
+.sidebar-user .u-info{flex:1;min-width:0}
+.sidebar-user .u-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user .u-role{font-size:11px;color:var(--text-muted)}
+
+/* ===== Main Area ===== */
+.main-area{
+  flex:1;margin-left:var(--sidebar-w);
+  min-height:100vh;display:flex;flex-direction:column;
+  transition:margin var(--transition);
+}
+.topbar{
+  height:var(--topbar-h);display:flex;align-items:center;
+  padding:0 28px;gap:16px;
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:30;
+  transition:all var(--transition);
+}
+.topbar-title{font-size:18px;font-weight:800;flex:1}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.theme-toggle{
+  width:40px;height:40px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);transition:all var(--transition);font-size:18px;
+}
+.theme-toggle:hover{background:var(--bg-secondary);color:var(--gold)}
+.notif-btn{
+  width:40px;height:40px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);transition:all var(--transition);font-size:16px;
+  position:relative;
+}
+.notif-btn:hover{background:var(--bg-secondary);color:var(--text-primary)}
+.notif-btn .dot{
+  position:absolute;top:8px;right:8px;width:8px;height:8px;
+  background:var(--rose);border-radius:50%;border:2px solid var(--bg-card);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.content{flex:1;padding:28px;padding-bottom:calc(var(--tabbar-h) + 28px)}
+
+/* ===== Pages ===== */
+.page{display:none;animation:pageIn 0.35s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== Dashboard ===== */
+.greeting{margin-bottom:24px}
+.greeting h2{font-size:26px;font-weight:900;margin-bottom:4px}
+.greeting h2 span{color:var(--accent)}
+.greeting p{color:var(--text-secondary);font-size:15px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px;
+  transition:all var(--transition);cursor:default;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.stat-card .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stat-card .sc-icon{
+  width:44px;height:44px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.stat-card .sc-trend{font-size:12px;font-weight:700;padding:3px 8px;border-radius:var(--radius-full)}
+.stat-card .sc-trend.up{color:#059669;background:rgba(5,150,105,0.1)}
+.stat-card .sc-trend.down{color:var(--rose);background:rgba(var(--rose-rgb),0.1)}
+.stat-card .sc-value{font-size:28px;font-weight:900;line-height:1;margin-bottom:4px}
+.stat-card .sc-label{font-size:13px;color:var(--text-secondary);font-weight:600}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-header h3{font-size:17px;font-weight:800}
+.section-header a{font-size:13px;font-weight:700;color:var(--accent)}
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+.qa-btn{
+  background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius-md);
+  padding:20px 16px;text-align:center;transition:all var(--transition);cursor:pointer;
+}
+.qa-btn:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.qa-btn .qa-icon{
+  width:48px;height:48px;border-radius:var(--radius-sm);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:10px;
+}
+.qa-btn .qa-label{font-size:13px;font-weight:700;color:var(--text-primary)}
+.recommend-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;margin-bottom:28px;scroll-snap-type:x mandatory}
+.recommend-scroll::-webkit-scrollbar{height:4px}
+.rec-card{
+  min-width:280px;max-width:300px;flex-shrink:0;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:all var(--transition);cursor:pointer;scroll-snap-align:start;
+}
+.rec-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.rec-card .rc-img{height:120px;background-size:cover;background-position:center;position:relative}
+.rec-card .rc-badge{
+  position:absolute;top:10px;left:10px;padding:4px 10px;
+  border-radius:var(--radius-full);font-size:11px;font-weight:800;color:#fff;
+}
+.rec-card .rc-body{padding:16px}
+.rec-card .rc-body h4{font-size:15px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.rec-card .rc-body .rc-meta{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.activity-list{display:flex;flex-direction:column;gap:12px}
+.activity-item{
+  display:flex;align-items:flex-start;gap:14px;padding:14px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-md);transition:all var(--transition);
+}
+.activity-item:hover{box-shadow:var(--shadow-sm)}
+.activity-item .ai-icon{
+  width:40px;height:40px;border-radius:var(--radius-full);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
+}
+.activity-item .ai-text{flex:1}
+.activity-item .ai-text h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.activity-item .ai-text p{font-size:13px;color:var(--text-secondary)}
+.activity-item .ai-time{font-size:12px;color:var(--text-muted);white-space:nowrap}
+
+/* ===== Programs Page ===== */
+.search-filter{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.search-box{
+  flex:1;min-width:200px;position:relative;
+}
+.search-box input{
+  width:100%;padding:11px 14px 11px 42px;
+  background:var(--bg-input);border:2px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px;color:var(--text-primary);
+  transition:all var(--transition);
+}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.1)}
+.search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:8px 16px;border-radius:var(--radius-full);font-size:13px;font-weight:700;
+  border:2px solid var(--border);color:var(--text-secondary);
+  transition:all var(--transition);cursor:pointer;white-space:nowrap;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.programs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.program-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;transition:all var(--transition);
+}
+.program-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.program-card .pc-img{height:140px;background-size:cover;background-position:center;position:relative}
+.program-card .pc-cat{
+  position:absolute;top:12px;left:12px;padding:4px 12px;
+  border-radius:var(--radius-full);font-size:11px;font-weight:800;color:#fff;
+}
+.program-card .pc-body{padding:18px}
+.program-card .pc-body h4{font-size:16px;font-weight:800;margin-bottom:8px;line-height:1.3}
+.program-card .pc-body p{font-size:13px;color:var(--text-secondary);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.program-card .pc-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-muted)}
+.program-card .pc-meta span{display:flex;align-items:center;gap:4px}
+.program-card .pc-footer{display:flex;gap:8px;padding:0 18px 18px}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.empty-state i{font-size:48px;margin-bottom:16px;opacity:0.4}
+.empty-state h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text-secondary)}
+.empty-state p{font-size:14px}
+
+/* ===== AI Chat ===== */
+.chat-container{
+  display:flex;flex-direction:column;height:calc(100vh - var(--topbar-h) - 56px);
+  max-width:780px;margin:0 auto;width:100%;
+}
+.chat-messages{flex:1;overflow-y:auto;padding:20px 0;display:flex;flex-direction:column;gap:16px}
+.chat-msg{display:flex;gap:12px;max-width:85%;animation:msgIn 0.3s ease}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg .msg-avatar{
+  width:36px;height:36px;border-radius:var(--radius-full);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.chat-msg.ai .msg-avatar{background:linear-gradient(135deg,#059669,#0D9488);color:#fff}
+.chat-msg.user .msg-avatar{background:linear-gradient(135deg,var(--secondary),var(--gold));color:#fff}
+.chat-msg .msg-bubble{
+  padding:14px 18px;border-radius:var(--radius-lg);font-size:14px;line-height:1.6;
+}
+.chat-msg.ai .msg-bubble{background:var(--bg-card);border:1px solid var(--border);border-top-left-radius:4px}
+.chat-msg.user .msg-bubble{background:var(--accent);color:#fff;border-top-right-radius:4px}
+.typing-indicator{display:flex;gap:4px;padding:8px 0}
+.typing-indicator span{
+  width:8px;height:8px;background:var(--text-muted);border-radius:50%;
+  animation:typingBounce 1.4s infinite;
+}
+.typing-indicator span:nth-child(2){animation-delay:0.2s}
+.typing-indicator span:nth-child(3){animation-delay:0.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+.chat-input-area{
+  display:flex;gap:10px;padding:16px 0 0;
+  border-top:1px solid var(--border);
+}
+.chat-input-area input{
+  flex:1;padding:12px 18px;background:var(--bg-input);border:2px solid var(--border);
+  border-radius:var(--radius-full);font-size:14px;color:var(--text-primary);
+  transition:all var(--transition);
+}
+.chat-input-area input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.1)}
+.chat-send{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:all var(--transition);flex-shrink:0;
+}
+.chat-send:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(var(--accent-rgb),0.4)}
+.chat-suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0}
+.chat-sug-btn{
+  padding:8px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:700;
+  border:1.5px solid var(--border);color:var(--text-secondary);
+  transition:all var(--transition);cursor:pointer;
+}
+.chat-sug-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),0.05)}
+
+/* ===== Form Page ===== */
+.form-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px;max-width:640px;
+}
+.form-card h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.form-card .form-subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid .full-width{grid-column:1/-1}
+.textarea-wrap textarea{
+  width:100%;padding:12px 14px;background:var(--bg-input);border:2px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px;color:var(--text-primary);
+  resize:vertical;min-height:100px;transition:all var(--transition);
+}
+.textarea-wrap textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.1)}
+.form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+
+/* ===== History Page ===== */
+.history-controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.sort-select{
+  padding:10px 14px;background:var(--bg-input);border:2px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-primary);
+  transition:all var(--transition);cursor:pointer;
+}
+.sort-select:focus{border-color:var(--accent)}
+.history-list{display:flex;flex-direction:column;gap:12px}
+.history-item{
+  display:flex;align-items:center;gap:16px;padding:16px 18px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-md);transition:all var(--transition);
+}
+.history-item:hover{box-shadow:var(--shadow-md)}
+.history-item .hi-icon{
+  width:44px;height:44px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.history-item .hi-info{flex:1;min-width:0}
+.history-item .hi-info h4{font-size:15px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item .hi-info p{font-size:13px;color:var(--text-muted)}
+.history-item .hi-actions{display:flex;gap:6px;opacity:0;transition:opacity var(--transition)}
+.history-item:hover .hi-actions{opacity:1}
+.hi-actions .btn-icon{
+  width:34px;height:34px;border-radius:var(--radius-xs);font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);transition:all var(--transition);
+}
+.hi-actions .btn-icon:hover{background:var(--bg-secondary)}
+.hi-actions .btn-icon.edit:hover{color:var(--accent)}
+.hi-actions .btn-icon.delete:hover{color:var(--rose);background:var(--rose-light)}
+
+/* ===== Profile Page ===== */
+.profile-header{
+  text-align:center;padding:32px 20px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);margin-bottom:24px;
+}
+.profile-avatar{
+  width:88px;height:88px;border-radius:var(--radius-full);margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--accent),#0D9488);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:32px;font-weight:900;
+  box-shadow:0 4px 20px rgba(var(--accent-rgb),0.3);
+}
+.profile-header h2{font-size:22px;font-weight:900;margin-bottom:2px}
+.profile-header p{color:var(--text-secondary);font-size:14px}
+.profile-stats{display:flex;justify-content:center;gap:32px;margin-top:20px}
+.profile-stats .ps-item{text-align:center}
+.profile-stats .ps-item .ps-val{font-size:22px;font-weight:900;color:var(--accent)}
+.profile-stats .ps-item .ps-label{font-size:12px;color:var(--text-muted);font-weight:600}
+.profile-section{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;
+}
+.profile-section h3{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.profile-section h3 i{color:var(--accent)}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--border);
+}
+.setting-row:last-child{border-bottom:none}
+.setting-row .sr-left{display:flex;align-items:center;gap:12px}
+.setting-row .sr-left i{width:20px;text-align:center;color:var(--text-muted)}
+.setting-row .sr-left span{font-size:14px;font-weight:600}
+.toggle-switch{
+  width:48px;height:26px;background:var(--border);border-radius:var(--radius-full);
+  position:relative;cursor:pointer;transition:background var(--transition);
+}
+.toggle-switch.on{background:var(--accent)}
+.toggle-switch::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:20px;height:20px;background:#fff;border-radius:50%;
+  transition:transform var(--transition);box-shadow:var(--shadow-sm);
+}
+.toggle-switch.on::after{transform:translateX(22px)}
+
+/* ===== Bottom Tab Bar (Mobile) ===== */
+.bottom-tabbar{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  height:var(--tabbar-h);background:var(--bg-card);
+  border-top:1px solid var(--border);z-index:40;
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+}
+.tabbar-nav{display:flex;align-items:center;justify-content:space-around;height:100%}
+.tabbar-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;color:var(--text-muted);
+  transition:color var(--transition);cursor:pointer;padding:4px 8px;
+  border-radius:var(--radius-sm);position:relative;
+}
+.tabbar-item i{font-size:18px;transition:all var(--transition)}
+.tabbar-item.active{color:var(--accent)}
+.tabbar-item.active i{transform:scale(1.1)}
+.tabbar-item .tab-badge{
+  position:absolute;top:0;right:2px;width:16px;height:16px;
+  background:var(--rose);color:#fff;font-size:9px;font-weight:800;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+
+/* ===== Modal ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.show{display:flex;animation:fadeIn 0.2s ease}
+.modal{
+  background:var(--bg-card);border-radius:var(--radius-lg);
+  padding:28px;width:100%;max-width:460px;max-height:85vh;overflow-y:auto;
+  animation:modalIn 0.3s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal .modal-sub{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
+.modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:20px}
+
+/* ===== Toast ===== */
+#toast-container{position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{
+  display:flex;align-items:center;gap:12px;padding:14px 20px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-xl);
+  min-width:280px;max-width:400px;animation:toastIn 0.35s ease;
+  transition:all 0.3s ease;
+}
+.toast.out{opacity:0;transform:translateX(100px)}
+@keyframes toastIn{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:translateX(0)}}
+.toast .t-icon{width:32px;height:32px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.toast.success .t-icon{background:var(--accent-light);color:var(--accent)}
+.toast.error .t-icon{background:var(--rose-light);color:var(--rose)}
+.toast.info .t-icon{background:var(--gold-light);color:var(--gold)}
+.toast .t-text{flex:1}
+.toast .t-text h4{font-size:14px;font-weight:700}
+.toast .t-text p{font-size:13px;color:var(--text-secondary)}
+.toast .t-close{color:var(--text-muted);font-size:14px;cursor:pointer;padding:4px}
+.toast .t-close:hover{color:var(--text-primary)}
+
+/* ===== Loading Overlay ===== */
+#loading-overlay{
+  position:fixed;inset:0;background:rgba(var(--accent-rgb),0.15);
+  backdrop-filter:blur(2px);z-index:150;display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+}
+#loading-overlay.show{display:flex}
+.loader{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading-overlay p{font-size:14px;font-weight:700;color:var(--text-secondary)}
+
+/* ===== Dev Panel ===== */
+.dev-code-block{
+  background:#0F172A;color:#E2E8F0;border-radius:var(--radius-sm);
+  padding:16px;font-family:'Courier New',monospace;font-size:12px;
+  line-height:1.6;overflow-x:auto;white-space:pre;max-height:400px;overflow-y:auto;
+}
+.dev-code-block .comment{color:#64748B}
+.dev-code-block .keyword{color:#C084FC}
+.dev-code-block .string{color:#34D399}
+.dev-code-block .function{color:#60A5FA}
+.dev-code-block .variable{color:#FBBF24}
+
+/* ===== Responsive ===== */
+@media(max-width:1024px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main-area{margin-left:0}
+  .bottom-tabbar{display:block}
+  .content{padding:20px 16px;padding-bottom:calc(var(--tabbar-h) + 20px)}
+}
+@media(max-width:640px){
+  .auth-card{padding:28px 22px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-card .sc-value{font-size:22px}
+  .programs-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .greeting h2{font-size:22px}
+  .quick-actions{grid-template-columns:1fr 1fr}
+  .profile-stats{gap:20px}
+  .history-item .hi-actions{opacity:1}
+  .chat-msg{max-width:92%}
+  .search-filter{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Auth Screen ===== -->
+<div id="screen-auth">
+  <div class="auth-orb"></div>
+  <div class="auth-orb"></div>
+  <div class="auth-orb"></div>
+  <div class="auth-orb"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+      <h1>YouthAI</h1>
+      <p>Growth & Wellbeing Platform</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Sign Up</button>
+    </div>
+    <!-- Login Form -->
+    <form class="auth-form active" id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-error" id="login-email-err">Please enter a valid email</div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="login-password" placeholder="Enter your password" required minlength="6">
+        </div>
+        <div class="form-error" id="login-pass-err">Password must be at least 6 characters</div>
+      </div>
+      <div class="form-row">
+        <label><input type="checkbox" checked> Remember me</label>
+        <a href="#" onclick="showToast('info','Reset Link','A password reset link has been sent to your email.')">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:4px">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+      </button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-muted)">
+        Demo: use any email & password (6+ chars)
+      </p>
+    </form>
+    <!-- Register Form -->
+    <form class="auth-form" id="register-form" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="reg-name" placeholder="Your full name" required minlength="2">
+        </div>
+        <div class="form-error" id="reg-name-err">Name must be at least 2 characters</div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="reg-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-error" id="reg-email-err">Please enter a valid email</div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="reg-password" placeholder="Create a password" required minlength="6">
+        </div>
+        <div class="form-error" id="reg-pass-err">Password must be at least 6 characters</div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="reg-confirm" placeholder="Confirm your password" required minlength="6">
+        </div>
+        <div class="form-error" id="reg-confirm-err">Passwords do not match</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:4px">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== App Shell ===== -->
+<div id="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="s-icon"><i class="fa-solid fa-seedling"></i></div>
+      <span>YouthAI</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+        <i class="fa-solid fa-house"></i> Dashboard
+      </div>
+      <div class="nav-item" data-page="programs" onclick="navigate('programs')">
+        <i class="fa-solid fa-calendar-days"></i> Programs
+        <span class="badge">3</span>
+      </div>
+      <div class="nav-item" data-page="ai-chat" onclick="navigate('ai-chat')">
+        <i class="fa-solid fa-robot"></i> AI Chat
+      </div>
+      <div class="nav-item" data-page="history" onclick="navigate('history')">
+        <i class="fa-solid fa-clock-rotate-left"></i> History
+      </div>
+      <div class="nav-item" data-page="profile" onclick="navigate('profile')">
+        <i class="fa-solid fa-user-gear"></i> Profile
+      </div>
+      <div class="nav-item" data-page="dev-ref" onclick="navigate('dev-ref')">
+        <i class="fa-solid fa-code"></i> Backend Ref
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="navigate('profile')">
+        <div class="avatar" id="sidebar-avatar">AS</div>
+        <div class="u-info">
+          <div class="u-name" id="sidebar-name">Adam Ashwin</div>
+          <div class="u-role">Student</div>
+        </div>
+        <i class="fa-solid fa-ellipsis-vertical" style="color:var(--text-muted)"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="main-area">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="btn-icon theme-toggle" style="display:none" id="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+        <button class="notif-btn" onclick="showToast('info','Notifications','You have 3 upcoming events this week.')">
+          <i class="fa-solid fa-bell"></i>
+          <span class="dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ===== Dashboard Page ===== -->
+      <div class="page active" id="page-dashboard">
+        <div class="greeting">
+          <h2>Good <span id="greeting-time">Morning</span>, <span id="greeting-name">Adam</span></h2>
+          <p>Here's what's happening with your wellbeing journey today.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="sc-top">
+              <div class="sc-icon" style="background:var(--accent-light);color:var(--accent)"><i class="fa-solid fa-calendar-check"></i></div>
+              <span class="sc-trend up"><i class="fa-solid fa-arrow-up"></i> 12%</span>
+            </div>
+            <div class="sc-value">8</div>
+            <div class="sc-label">Programs Joined</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-top">
+              <div class="sc-icon" style="background:var(--secondary-light);color:var(--secondary)"><i class="fa-solid fa-comments"></i></div>
+              <span class="sc-trend up"><i class="fa-solid fa-arrow-up"></i> 24%</span>
+            </div>
+            <div class="sc-value">23</div>
+            <div class="sc-label">AI Sessions</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-top">
+              <div class="sc-icon" style="background:var(--gold-light);color:var(--gold)"><i class="fa-solid fa-heart-pulse"></i></div>
+              <span class="sc-trend up"><i class="fa-solid fa-arrow-up"></i> 5%</span>
+            </div>
+            <div class="sc-value">82</div>
+            <div class="sc-label">Wellness Score</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-top">
+              <div class="sc-icon" style="background:var(--rose-light);color:var(--rose)"><i class="fa-solid fa-trophy"></i></div>
+              <span class="sc-trend down"><i class="fa-solid fa-arrow-down"></i> 3%</span>
+            </div>
+            <div class="sc-value">5</div>
+            <div class="sc-label">Achievements</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="quick-actions">
+          <div class="qa-btn" onclick="navigate('ai-chat')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#059669,#0D9488);color:#fff"><i class="fa-solid fa-robot"></i></div>
+            <div class="qa-label">Talk to AI</div>
+          </div>
+          <div class="qa-btn" onclick="navigate('form')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#EA580C,#F59E0B);color:#fff"><i class="fa-solid fa-plus"></i></div>
+            <div class="qa-label">Add Record</div>
+          </div>
+          <div class="qa-btn" onclick="navigate('programs')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff"><i class="fa-solid fa-compass"></i></div>
+            <div class="qa-label">Explore</div>
+          </div>
+          <div class="qa-btn" onclick="navigate('history')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#E11D48,#FB7185);color:#fff"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="qa-label">My Progress</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Recommended for You</h3>
+          <a href="#" onclick="navigate('programs');return false">View All</a>
+        </div>
+        <div class="recommend-scroll" id="rec-scroll"></div>
+
+        <div class="section-header">
+          <h3>Recent Activity</h3>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="ai-icon" style="background:var(--accent-light);color:var(--accent)"><i class="fa-solid fa-robot"></i></div>
+            <div class="ai-text">
+              <h4>AI Chat Session</h4>
+              <p>Discussed career paths in data science and received skill recommendations</p>
+            </div>
+            <div class="ai-time">2h ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="ai-icon" style="background:var(--secondary-light);color:var(--secondary)"><i class="fa-solid fa-calendar-plus"></i></div>
+            <div class="ai-text">
+              <h4>Registered: Mindfulness Workshop</h4>
+              <p>Signed up for the stress management workshop on Feb 15</p>
+            </div>
+            <div class="ai-time">5h ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="ai-icon" style="background:var(--gold-light);color:var(--gold)"><i class="fa-solid fa-star"></i></div>
+            <div class="ai-text">
+              <h4>Achievement Unlocked</h4>
+              <p>Completed 5 consecutive days of wellbeing check-ins</p>
+            </div>
+            <div class="ai-time">1d ago</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Programs Page ===== -->
+      <div class="page" id="page-programs">
+        <div class="search-filter">
+          <div class="search-box">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="program-search" placeholder="Search programs..." oninput="filterPrograms()">
+          </div>
+        </div>
+        <div class="filter-chips" id="filter-chips">
+          <button class="chip active" data-cat="all" onclick="setFilter('all',this)">All</button>
+          <button class="chip" data-cat="Wellbeing" onclick="setFilter('Wellbeing',this)">Wellbeing</button>
+          <button class="chip" data-cat="Career" onclick="setFilter('Career',this)">Career</button>
+          <button class="chip" data-cat="Academic" onclick="setFilter('Academic',this)">Academic</button>
+          <button class="chip" data-cat="Sports" onclick="setFilter('Sports',this)">Sports</button>
+          <button class="chip" data-cat="Volunteering" onclick="setFilter('Volunteering',this)">Volunteering</button>
+        </div>
+        <div class="programs-grid" id="programs-grid"></div>
+      </div>
+
+      <!-- ===== AI Chat Page ===== -->
+      <div class="page" id="page-ai-chat">
+        <div class="chat-container">
+          <div class="chat-suggestions" id="chat-suggestions">
+            <button class="chat-sug-btn" onclick="sendSuggestion(this)">I feel stressed about exams</button>
+            <button class="chat-sug-btn" onclick="sendSuggestion(this)">What career suits me?</button>
+            <button class="chat-sug-btn" onclick="sendSuggestion(this)">Suggest campus activities</button>
+            <button class="chat-sug-btn" onclick="sendSuggestion(this)">How to improve focus?</button>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg ai">
+              <div class="msg-avatar"><i class="fa-solid fa-seedling"></i></div>
+              <div class="msg-bubble">
+                Hi there! I'm your YouthAI companion. I'm here to help with your wellbeing, career exploration, and campus engagement. How are you feeling today?
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" onclick="sendChat()" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Form Page ===== -->
+      <div class="page" id="page-form">
+        <div class="form-card">
+          <h3>Add New Record</h3>
+          <p class="form-subtitle">Fill in the details below to create a new entry in the system.</p>
+          <form onsubmit="handleFormSubmit(event)" id="data-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Title</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-heading"></i>
+                  <input type="text" id="form-title" placeholder="Record title" required minlength="3">
+                </div>
+                <div class="form-error" id="form-title-err">Title must be at least 3 characters</div>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-tag"></i>
+                  <select id="form-category" required>
+                    <option value="">Select category</option>
+                    <option value="Wellbeing">Wellbeing</option>
+                    <option value="Career">Career</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Volunteering">Volunteering</option>
+                  </select>
+                </div>
+                <div class="form-error" id="form-cat-err">Please select a category</div>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-calendar"></i>
+                  <input type="date" id="form-date" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Value (Numeric)</label>
+                <div class="input-wrap">
+                  <i class="fa-solid fa-hashtag"></i>
+                  <input type="number" id="form-value" placeholder="e.g. 85" step="any" required>
+                </div>
+                <div class="form-error" id="form-val-err">Please enter a valid number</div>
+              </div>
+              <div class="form-group full-width">
+                <label>Description</label>
+                <div class="textarea-wrap">
+                  <textarea id="form-desc" placeholder="Brief description of this record..." rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" onclick="navigate('dashboard')">Cancel</button>
+              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Record</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ===== History Page ===== -->
+      <div class="page" id="page-history">
+        <div class="history-controls">
+          <div class="search-box" style="flex:1;min-width:180px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="history-search" placeholder="Search records..." oninput="filterHistory()">
+          </div>
+          <select class="sort-select" id="history-sort" onchange="filterHistory()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">By Title (A-Z)</option>
+            <option value="value-high">Value: High to Low</option>
+            <option value="value-low">Value: Low to High</option>
+          </select>
+        </div>
+        <div class="filter-chips" id="history-filter-chips">
+          <button class="chip active" data-cat="all" onclick="setHistoryFilter('all',this)">All</button>
+          <button class="chip" data-cat="Wellbeing" onclick="setHistoryFilter('Wellbeing',this)">Wellbeing</button>
+          <button class="chip" data-cat="Career" onclick="setHistoryFilter('Career',this)">Career</button>
+          <button class="chip" data-cat="Academic" onclick="setHistoryFilter('Academic',this)">Academic</button>
+          <button class="chip" data-cat="Sports" onclick="setHistoryFilter('Sports',this)">Sports</button>
+          <button class="chip" data-cat="Volunteering" onclick="setHistoryFilter('Volunteering',this)">Volunteering</button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+
+      <!-- ===== Profile Page ===== -->
+      <div class="page" id="page-profile">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">AS</div>
+          <h2 id="profile-name">Adam Ashwin</h2>
+          <p id="profile-email">adam@ukm.edu.my</p>
+          <div class="profile-stats">
+            <div class="ps-item"><div class="ps-val" id="ps-records">0</div><div class="ps-label">Records</div></div>
+            <div class="ps-item"><div class="ps-val">23</div><div class="ps-label">AI Chats</div></div>
+            <div class="ps-item"><div class="ps-val">82</div><div class="ps-label">Wellness</div></div>
+          </div>
+        </div>
+        <div class="profile-section">
+          <h3><i class="fa-solid fa-pen-to-square"></i> Edit Profile</h3>
+          <form onsubmit="handleProfileUpdate(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name</label>
+                <div class="input-wrap"><i class="fa-solid fa-user"></i><input type="text" id="edit-name" value="Adam Ashwin" required></div>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <div class="input-wrap"><i class="fa-solid fa-envelope"></i><input type="email" id="edit-email" value="adam@ukm.edu.my" required></div>
+              </div>
+              <div class="form-group full-width">
+                <label>Bio</label>
+                <div class="textarea-wrap"><textarea id="edit-bio" rows="2">FTSM Student passionate about AI and youth development.</textarea></div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Save Changes</button>
+            </div>
+          </form>
+        </div>
+        <div class="profile-section">
+          <h3><i class="fa-solid fa-gear"></i> Settings</h3>
+          <div class="setting-row">
+            <div class="sr-left"><i class="fa-solid fa-moon"></i><span>Dark Mode</span></div>
+            <div class="toggle-switch" id="setting-dark" onclick="toggleTheme()"></div>
+          </div>
+          <div class="setting-row">
+            <div class="sr-left"><i class="fa-solid fa-bell"></i><span>Push Notifications</span></div>
+            <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div class="sr-left"><i class="fa-solid fa-language"></i><span>Language</span></div>
+            <span style="font-size:13px;color:var(--text-muted);font-weight:600">English</span>
+          </div>
+        </div>
+        <div class="profile-section">
+          <h3><i class="fa-solid fa-shield-halved"></i> Account</h3>
+          <div class="setting-row" style="cursor:pointer" onclick="showToast('info','Change Password','Password change feature coming soon.')">
+            <div class="sr-left"><i class="fa-solid fa-key"></i><span>Change Password</span></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);font-size:12px"></i>
+          </div>
+          <div class="setting-row" style="cursor:pointer" onclick="handleLogout()">
+            <div class="sr-left"><i class="fa-solid fa-right-from-bracket" style="color:var(--rose)"></i><span style="color:var(--rose)">Log Out</span></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);font-size:12px"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Developer Reference Page ===== -->
+      <div class="page" id="page-dev-ref">
+        <div class="form-card" style="max-width:100%">
+          <h3><i class="fa-solid fa-code" style="color:var(--accent);margin-right:8px"></i>Backend Code Reference</h3>
+          <p class="form-subtitle">Complete PHP backend files and SQL schema. Copy each file into your project structure.</p>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">SQL Schema (phpMyAdmin)</h4>
+            <div class="dev-code-block" id="code-sql"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">config/db.php</h4>
+            <div class="dev-code-block" id="code-db"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">auth/login.php</h4>
+            <div class="dev-code-block" id="code-login"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">auth/register.php</h4>
+            <div class="dev-code-block" id="code-register"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">auth/logout.php</h4>
+            <div class="dev-code-block" id="code-logout"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">api/create_api.php</h4>
+            <div class="dev-code-block" id="code-create-api"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">api/read_api.php</h4>
+            <div class="dev-code-block" id="code-read-api"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">api/update_api.php</h4>
+            <div class="dev-code-block" id="code-update-api"></div>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--accent)">api/delete_api.php</h4>
+            <div class="dev-code-block" id="code-delete-api"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+
+  <!-- Bottom Tab Bar -->
+  <nav class="bottom-tabbar">
+    <div class="tabbar-nav">
+      <div class="tabbar-item active" data-page="dashboard" onclick="navigate('dashboard')">
+        <i class="fa-solid fa-house"></i><span>Home</span>
+      </div>
+      <div class="tabbar-item" data-page="programs" onclick="navigate('programs')">
+        <i class="fa-solid fa-calendar-days"></i><span>Programs</span>
+        <span class="tab-badge">3</span>
+      </div>
+      <div class="tabbar-item" data-page="ai-chat" onclick="navigate('ai-chat')">
+        <i class="fa-solid fa-robot"></i><span>AI Chat</span>
+      </div>
+      <div class="tabbar-item" data-page="history" onclick="navigate('history')">
+        <i class="fa-solid fa-clock-rotate-left"></i><span>History</span>
+      </div>
+      <div class="tabbar-item" data-page="profile" onclick="navigate('profile')">
+        <i class="fa-solid fa-user"></i><span>Profile</span>
+      </div>
+    </div>
+  </nav>
+</div><!-- /app-shell -->
+
+<!-- ===== Edit Modal ===== -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>Edit Record</h3>
+    <p class="modal-sub">Update the details of this record.</p>
+    <form onsubmit="handleEditSubmit(event)">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Title</label>
+        <div class="input-wrap"><i class="fa-solid fa-heading"></i><input type="text" id="edit-title" required minlength="3"></div>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <div class="input-wrap"><i class="fa-solid fa-tag"></i>
+          <select id="edit-category" required>
+            <option value="Wellbeing">Wellbeing</option>
+            <option value="Career">Career</option>
+            <option value="Academic">Academic</option>
+            <option value="Sports">Sports</option>
+            <option value="Volunteering">Volunteering</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Value</label>
+        <div class="input-wrap"><i class="fa-solid fa-hashtag"></i><input type="number" id="edit-value" step="any" required></div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <div class="textarea-wrap"><textarea id="edit-desc" rows="3"></textarea></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Delete Confirm Modal ===== -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal" style="text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--rose-light);color:var(--rose);display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px"><i class="fa-solid fa-trash-can"></i></div>
+    <h3 style="margin-bottom:4px">Delete Record?</h3>
+    <p class="modal-sub">This action cannot be undone. The record will be permanently removed from the database.</p>
+    <input type="hidden" id="delete-id">
+    <div class="modal-actions" style="justify-content:center">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay"><div class="loader"></div><p>Please wait...</p></div>
+
+<script>
+/* ============================================================
+   YouthAI - Growth & Wellbeing Platform
+   Complete Frontend Application with Simulated Backend
+   ============================================================ */
+
+// ===== Application State =====
+const state = {
+  currentPage: 'dashboard',
+  user: null,
+  darkMode: false,
+  programFilter: 'all',
+  historyFilter: 'all',
+  records: [],
+  nextId: 10,
+  chatHistory: []
+};
+
+// ===== Sample Programs Data =====
+const programsData = [
+  { id:1, title:"Mindfulness & Stress Management Workshop", category:"Wellbeing", date:"2025-02-15", time:"10:00 AM", location:"Dewan Canselor", description:"Learn practical techniques to manage academic stress through guided meditation and cognitive exercises.", img:"https://picsum.photos/seed/mindful/600/300", spots:30, registered:18 },
+  { id:2, title:"Career Path Exploration: Tech Industry", category:"Career", date:"2025-02-20", time:"2:00 PM", location:"FTSM Lab 3", description:"Discover various career paths in the technology sector. Industry professionals share real-world insights.", img:"https://picsum.photos/seed/techcareer/600/300", spots:25, registered:22 },
+  { id:3, title:"Python Data Science Bootcamp", category:"Academic", date:"2025-02-25", time:"9:00 AM", location:"Computer Lab A", description:"Intensive 3-day bootcamp covering Python fundamentals, pandas, and introductory machine learning.", img:"https://picsum.photos/seed/pythonds/600/300", spots:40, registered:35 },
+  { id:4, title:"Inter-Faculty Futsal Tournament", category:"Sports", date:"2025-03-01", time:"8:00 AM", location:"Sports Complex", description:"Annual futsal competition between faculties. Form teams of 7 and compete for the championship trophy.", img:"https://picsum.photos/seed/futsal/600/300", spots:70, registered:56 },
+  { id:5, title:"Community Beach Cleanup Drive", category:"Volunteering", date:"2025-03-05", time:"7:00 AM", location:"Port Dickson Beach", description:"Join fellow students in a coastal cleanup initiative. Transportation and meals provided.", img:"https://picsum.photos/seed/beachclean/600/300", spots:50, registered:32 },
+  { id:6, title:"Building Resilience: Mental Health Talk", category:"Wellbeing", date:"2025-03-10", time:"3:00 PM", location:"Lecture Hall 1", description:"Guest speaker Dr. Sarah shares evidence-based strategies for building psychological resilience.", img:"https://picsum.photos/seed/resilience/600/300", spots:100, registered:67 },
+  { id:7, title:"Resume Writing & Interview Prep", category:"Career", date:"2025-03-12", time:"10:00 AM", location:"Career Center", description:"Hands-on workshop to craft compelling resumes and practice interview techniques with HR experts.", img:"https://picsum.photos/seed/resume22/600/300", spots:30, registered:28 },
+  { id:8, title:"UX Design Fundamentals Workshop", category:"Academic", date:"2025-03-15", time:"1:00 PM", location:"Design Studio", description:"Learn core UX principles, wireframing, and prototyping using Figma. No prior experience needed.", img:"https://picsum.photos/seed/uxdesign/600/300", spots:25, registered:19 },
+  { id:9, title:"Sunrise Yoga Session", category:"Sports", date:"2025-03-18", time:"6:30 AM", location:"Campus Field", description:"Start your day with refreshing yoga sessions. Suitable for all levels. Mats provided.", img:"https://picsum.photos/seed/yoga23/600/300", spots:40, registered:15 }
+];
+
+// ===== Sample Records (History) =====
+const sampleRecords = [
+  { id:1, title:"Mood Check-in: Good", category:"Wellbeing", date:"2025-02-10", value:8, description:"Feeling positive after the morning exercise session." },
+  { id:2, title:"Data Science Workshop", category:"Academic", date:"2025-02-08", value:92, description:"Completed the Python data science workshop with high score." },
+  { id:3, title:"Career Assessment Quiz", category:"Career", date:"2025-02-06", value:75, description:"AI-recommended paths: Data Scientist, ML Engineer, Research Analyst." },
+  { id:4, title:"Futsal Practice", category:"Sports", date:"2025-02-05", value:60, description:"Training session with faculty team. Working on stamina and teamwork." },
+  { id:5, title:"Beach Cleanup Participation", category:"Volunteering", date:"2025-02-03", value:3, description:"Volunteered 3 hours at the coastal cleanup. Collected 15kg of waste." },
+  { id:6, title:"Stress Level Check", category:"Wellbeing", date:"2025-02-01", value:6, description:"Moderate stress due to upcoming assignments. AI suggested breathing exercises." },
+  { id:7, title:"Resume Score", category:"Career", date:"2025-01-28", value:78, description:"Resume analysis score. Need to add more project descriptions." },
+  { id:8, title:"Focus Session: 45 min", category:"Academic", date:"2025-01-25", value:45, description:"Pomodoro session completed. Studied database management concepts." },
+  { id:9, title:"Community Service Hours", category:"Volunteering", date:"2025-01-22", value:5, description:"Tutored underprivileged students in basic computer skills." }
+];
+state.records = JSON.parse(JSON.stringify(sampleRecords));
+
+// ===== Category Colors =====
+const catColors = {
+  Wellbeing: { bg:'var(--accent-light)', color:'var(--accent)', hex:'#059669', gradient:'linear-gradient(135deg,#059669,#0D9488)' },
+  Career: { bg:'var(--secondary-light)', color:'var(--secondary)', hex:'#EA580C', gradient:'linear-gradient(135deg,#EA580C,#F59E0B)' },
+  Academic: { bg:'rgba(124,58,237,0.1)', color:'#7C3AED', hex:'#7C3AED', gradient:'linear-gradient(135deg,#7C3AED,#A78BFA)' },
+  Sports: { bg:'var(--gold-light)', color:'var(--gold)', hex:'#D97706', gradient:'linear-gradient(135deg,#D97706,#FBBF24)' },
+  Volunteering: { bg:'var(--rose-light)', color:'var(--rose)', hex:'#E11D48', gradient:'linear-gradient(135deg,#E11D48,#FB7185)' }
+};
+
+// ===== AI Response Logic =====
+const aiResponses = {
+  stress: "I understand exam stress can feel overwhelming. Here are some evidence-based strategies:\n\n1. **Break it down** - Split your study material into smaller, manageable chunks\n2. **Pomodoro technique** - Study for 25 minutes, then take a 5-minute break\n3. **Deep breathing** - Try 4-7-8 breathing: inhale 4s, hold 7s, exhale 8s\n4. **Physical activity** - Even a 15-minute walk can reduce cortisol levels\n\nWould you like me to help you create a study schedule?",
+  career: "Based on your interests in technology, here are some career paths worth exploring:\n\n1. **Data Scientist** - High demand, combines analytics and programming\n2. **UX Designer** - Great if you enjoy creative problem-solving\n3. **Software Engineer** - Versatile role with many specializations\n4. **AI/ML Engineer** - Cutting-edge field with strong growth potential\n\nI'd recommend starting with a skills assessment. Would you like me to suggest some courses or workshops?",
+  activities: "Here are some upcoming campus activities that match your interests:\n\n* **Mindfulness Workshop** (Feb 15) - Great for wellbeing\n* **Tech Career Exploration** (Feb 20) - Perfect for career planning\n* **Python Bootcamp** (Feb 25) - Boost your technical skills\n* **Beach Cleanup** (Mar 5) - Meaningful community engagement\n\nWould you like more details about any of these?",
+  focus: "Improving focus is a common challenge. Try these proven techniques:\n\n1. **Eliminate distractions** - Put your phone in another room during study time\n2. **Time blocking** - Assign specific time slots for specific tasks\n3. **The 2-minute rule** - If a task takes less than 2 minutes, do it immediately\n4. **Mindful transitions** - Take 3 deep breaths between activities\n\nConsistency is key. Start with just one technique and build from there.",
+  default: [
+    "That's a great point! Building self-awareness is the first step toward personal growth. Can you tell me more about what's on your mind?",
+    "I appreciate you sharing that. Remember, it's okay to take things one step at a time. What specific aspect would you like to explore further?",
+    "Thank you for opening up. Your wellbeing matters, and I'm here to support you. Would you like some practical suggestions?",
+    "That's an interesting thought! Let me help you think through this systematically. What outcome are you hoping for?",
+    "I hear you. Many students experience similar feelings. You're not alone in this. Let's work through it together."
+  ]
+};
+
+function getAIResponse(userMsg) {
+  const lower = userMsg.toLowerCase();
+  if (lower.includes('stress') || lower.includes('anxious') || lower.includes('worried') || lower.includes('exam')) return aiResponses.stress;
+  if (lower.includes('career') || lower.includes('job') || lower.includes('work') || lower.includes('future') || lower.includes('path')) return aiResponses.career;
+  if (lower.includes('activ') || lower.includes('event') || lower.includes('program') || lower.includes('campus') || lower.includes('join')) return aiResponses.activities;
+  if (lower.includes('focus') || lower.includes('concentrate') || lower.includes('distract') || lower.includes('motivation')) return aiResponses.focus;
+  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) return "Hello! Great to see you here. How can I support you today? Whether it's about your studies, career plans, or just need someone to talk to — I'm all ears.";
+  if (lower.includes('sad') || lower.includes('down') || lower.includes('depress') || lower.includes('lonely')) return "I'm sorry you're feeling this way. It takes courage to acknowledge these feelings. Here's what might help:\n\n1. **Talk to someone** - Reach out to a counselor or trusted friend\n2. **Small wins** - Set tiny achievable goals to build momentum\n3. **Move your body** - Even light exercise releases endorphins\n4. **Journal** - Write down your thoughts to process them\n\nIf these feelings persist, I strongly recommend speaking with a professional counselor at UKM's student services.";
+  if (lower.includes('thank')) return "You're welcome! Remember, I'm always here whenever you need support. Take care of yourself!";
+  const defaults = aiResponses.default;
+  return defaults[Math.floor(Math.random() * defaults.length)];
+}
+
+// ===== Initialization =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date as default for form
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('form-date');
+  if (dateInput) dateInput.value = today;
+
+  // Check for saved dark mode
+  if (localStorage.getItem('youthai-dark') === 'true') {
+    state.darkMode = true;
+    document.documentElement.classList.add('dark');
+    document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+    const dt = document.getElementById('setting-dark');
+    if (dt) dt.classList.add('on');
+  }
+
+  // Set greeting based on time
+  updateGreeting();
+
+  // Render programs
+  renderPrograms();
+
+  // Render history
+  renderHistory();
+
+  // Render recommended
+  renderRecommended();
+
+  // Render dev reference code
+  renderDevCode();
+
+  // Show/hide mobile menu button
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+function checkMobile() {
+  const btn = document.getElementById('menu-btn');
+  if (window.innerWidth <= 1024) {
+    btn.style.display = 'flex';
+  } else {
+    btn.style.display = 'none';
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  let timeText = 'Morning';
+  if (hour >= 12 && hour < 17) timeText = 'Afternoon';
+  else if (hour >= 17) timeText = 'Evening';
+  const el = document.getElementById('greeting-time');
+  if (el) el.textContent = timeText;
+}
+
+// ===== Auth Functions =====
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  if (tab === 'login') {
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    document.getElementById('login-form').classList.add('active');
+  } else {
+    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+    document.getElementById('register-form').classList.add('active');
+  }
+  // Clear errors
+  document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+}
+
+function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  let valid = true;
+
+  if (!validateEmail(email)) {
+    document.getElementById('login-email-err').classList.add('show'); valid = false;
+  } else { document.getElementById('login-email-err').classList.remove('show'); }
+
+  if (pass.length < 6) {
+    document.getElementById('login-pass-err').classList.add('show'); valid = false;
+  } else { document.getElementById('login-pass-err').classList.remove('show'); }
+
+  if (!valid) return;
+
+  showLoading();
+  // Simulate API call
+  setTimeout(() => {
+    const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    state.user = { name, email, initials: name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2) };
+    hideLoading();
+    enterApp();
+    showToast('success', 'Welcome back!', `Signed in as ${state.user.name}`);
+  }, 800);
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  let valid = true;
+
+  if (name.length < 2) { document.getElementById('reg-name-err').classList.add('show'); valid = false; }
+  else { document.getElementById('reg-name-err').classList.remove('show'); }
+
+  if (!validateEmail(email)) { document.getElementById('reg-email-err').classList.add('show'); valid = false; }
+  else { document.getElementById('reg-email-err').classList.remove('show'); }
+
+  if (pass.length < 6) { document.getElementById('reg-pass-err').classList.add('show'); valid = false; }
+  else { document.getElementById('reg-pass-err').classList.remove('show'); }
+
+  if (pass !== confirm) { document.getElementById('reg-confirm-err').classList.add('show'); valid = false; }
+  else { document.getElementById('reg-confirm-err').classList.remove('show'); }
+
+  if (!valid) return;
+
+  showLoading();
+  setTimeout(() => {
+    state.user = { name, email, initials: name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2) };
+    hideLoading();
+    enterApp();
+    showToast('success', 'Account created!', 'Welcome to YouthAI. Let\'s start your journey!');
+  }, 1000);
+}
+
+function enterApp() {
+  document.getElementById('screen-auth').classList.add('hidden');
+  document.getElementById('app-shell').classList.add('active');
+  // Update user info across app
+  if (state.user) {
+    document.getElementById('greeting-name').textContent = state.user.name.split(' ')[0];
+    document.getElementById('sidebar-name').textContent = state.user.name;
+    document.getElementById('sidebar-avatar').textContent = state.user.initials;
+    document.getElementById('profile-name').textContent = state.user.name;
+    document.getElementById('profile-email').textContent = state.user.email;
+    document.getElementById('profile-avatar').textContent = state.user.initials;
+    document.getElementById('edit-name').value = state.user.name;
+    document.getElementById('edit-email').value = state.user.email;
+  }
+  updateProfileStats();
+}
+
+function handleLogout() {
+  state.user = null;
+  document.getElementById('app-shell').classList.remove('active');
+  document.getElementById('screen-auth').classList.remove('hidden');
+  // Clear forms
+  document.getElementById('login-form').reset();
+  document.getElementById('register-form').reset();
+  navigate('dashboard');
+  showToast('info', 'Logged out', 'You have been signed out successfully.');
+}
+
+// ===== Navigation =====
+function navigate(page) {
+  state.currentPage = page;
+
+  // Update pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+
+  // Update sidebar
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+
+  // Update tabbar
+  document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
+  const tabItem = document.querySelector(`.tabbar-item[data-page="${page}"]`);
+  if (tabItem) tabItem.classList.add('active');
+
+  // Update topbar title
+  const titles = {
+    dashboard: 'Dashboard', programs: 'Programs & Events', 'ai-chat': 'AI Companion',
+    form: 'Add Record', history: 'My Records', profile: 'Profile', 'dev-ref': 'Backend Reference'
+  };
+  document.getElementById('topbar-title').textContent = titles[page] || 'YouthAI';
+
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+
+  // Re-render dynamic content
+  if (page === 'history') renderHistory();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ===== Theme Toggle =====
+function toggleTheme() {
+  state.darkMode = !state.darkMode;
+  document.documentElement.classList.toggle('dark', state.darkMode);
+  const icon = document.getElementById('theme-icon');
+  icon.className = state.darkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  const dt = document.getElementById('setting-dark');
+  if (dt) dt.classList.toggle('on', state.darkMode);
+  localStorage.setItem('youthai-dark', state.darkMode);
+}
+
+// ===== Toast Notifications =====
+function showToast(type, title, message) {
+  const container = document.getElementById('toast-container');
+  const icons = { success: 'fa-check', error: 'fa-xmark', info: 'fa-info' };
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <div class="t-icon"><i class="fa-solid ${icons[type]}"></i></div>
+    <div class="t-text"><h4>${title}</h4><p>${message}</p></div>
+    <div class="t-close" onclick="this.parentElement.classList.add('out');setTimeout(()=>this.parentElement.remove(),300)"><i class="fa-solid fa-xmark"></i></div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('out');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+// ===== Loading =====
+function showLoading() { document.getElementById('loading-overlay').classList.add('show'); }
+function hideLoading() { document.getElementById('loading-overlay').classList.remove('show'); }
+
+// ===== Programs Rendering =====
+function renderPrograms() {
+  const grid = document.getElementById('programs-grid');
+  const search = (document.getElementById('program-search')?.value || '').toLowerCase();
+  const filtered = programsData.filter(p => {
+    const matchCat = state.programFilter === 'all' || p.category === state.programFilter;
+    const matchSearch = p.title.toLowerCase().includes(search) || p.description.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-search"></i><h3>No programs found</h3><p>Try adjusting your search or filter criteria.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => {
+    const cc = catColors[p.category] || catColors.Wellbeing;
+    const spotsLeft = p.spots - p.registered;
+    return `
+      <div class="program-card" onclick="showToast('info','${p.title}','${p.date} at ${p.time} | ${p.location}')">
+        <div class="pc-img" style="background-image:url('${p.img}')">
+          <span class="pc-cat" style="background:${cc.gradient}">${p.category}</span>
+        </div>
+        <div class="pc-body">
+          <h4>${p.title}</h4>
+          <p>${p.description}</p>
+          <div class="pc-meta">
+            <span><i class="fa-regular fa-calendar"></i> ${p.date}</span>
+            <span><i class="fa-regular fa-clock"></i> ${p.time}</span>
+            <span><i class="fa-solid fa-location-dot"></i> ${p.location}</span>
+            <span style="color:${spotsLeft < 5 ? 'var(--rose)' : 'var(--accent)'}"><i class="fa-solid fa-users"></i> ${spotsLeft} spots left</span>
+          </div>
+        </div>
+        <div class="pc-footer">
+          <button class="btn btn-primary btn-sm btn-full" onclick="event.stopPropagation();showToast('success','Registered!','You have been registered for ${p.title.replace(/'/g,"\\'")}.')"><i class="fa-solid fa-check"></i> Register</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterPrograms() { renderPrograms(); }
+
+function setFilter(cat, el) {
+  state.programFilter = cat;
+  document.querySelectorAll('#filter-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderPrograms();
+}
+
+// ===== Recommended Rendering =====
+function renderRecommended() {
+  const scroll = document.getElementById('rec-scroll');
+  const recommended = programsData.slice(0, 5);
+  scroll.innerHTML = recommended.map(p => {
+    const cc = catColors[p.category] || catColors.Wellbeing;
+    return `
+      <div class="rec-card" onclick="navigate('programs')">
+        <div class="rc-img" style="background-image:url('${p.img}')">
+          <span class="rc-badge" style="background:${cc.gradient}">${p.category}</span>
+        </div>
+        <div class="rc-body">
+          <h4>${p.title}</h4>
+          <div class="rc-meta"><i class="fa-regular fa-calendar"></i> ${p.date} &middot; ${p.time}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===== AI Chat =====
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  // Hide suggestions after first message
+  const sug = document.getElementById('chat-suggestions');
+  if (sug) sug.style.display = 'none';
+
+  // Add user message
+  addChatMessage('user', msg);
+
+  // Show typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg ai';
+  typing.id = 'typing-ind';
+  typing.innerHTML = `
+    <div class="msg-avatar"><i class="fa-solid fa-seedling"></i></div>
+    <div class="msg-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>
+  `;
+  document.getElementById('chat-messages').appendChild(typing);
+  scrollChat();
+
+  // Simulate AI response delay
+  setTimeout(() => {
+    typing.remove();
+    const response = getAIResponse(msg);
+    addChatMessage('ai', response);
+  }, 1200 + Math.random() * 800);
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendChat();
+}
+
+function addChatMessage(type, text) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${type}`;
+  // Convert markdown-like bold to HTML
+  const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+  const avatarIcon = type === 'ai' ? 'fa-seedling' : (state.user ? '' : 'fa-user');
+  const avatarContent = type === 'ai'
+    ? `<i class="fa-solid fa-seedling"></i>`
+    : (state.user ? state.user.initials : 'U');
+  div.innerHTML = `
+    <div class="msg-avatar">${avatarContent}</div>
+    <div class="msg-bubble">${formatted}</div>
+  `;
+  container.appendChild(div);
+  scrollChat();
+}
+
+function scrollChat() {
+  const container = document.getElementById('chat-messages');
+  container.scrollTop = container.scrollHeight;
+}
+
+// ===== Form Handling (CRUD Create) =====
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const title = document.getElementById('form-title').value.trim();
+  const category = document.getElementById('form-category').value;
+  const date = document.getElementById('form-date').value;
+  const value = parseFloat(document.getElementById('form-value').value);
+  const desc = document.getElementById('form-desc').value.trim();
+  let valid = true;
+
+  if (title.length < 3) { document.getElementById('form-title-err').classList.add('show'); valid = false; }
+  else { document.getElementById('form-title-err').classList.remove('show'); }
+
+  if (!category) { document.getElementById('form-cat-err').classList.add('show'); valid = false; }
+  else { document.getElementById('form-cat-err').classList.remove('show'); }
+
+  if (isNaN(value)) { document.getElementById('form-val-err').classList.add('show'); valid = false; }
+  else { document.getElementById('form-val-err').classList.remove('show'); }
+
+  if (!valid) return;
+
+  showLoading();
+  // Simulate API POST
+  setTimeout(() => {
+    const newRecord = {
+      id: state.nextId++,
+      title, category, date, value,
+      description: desc || 'No description provided.'
+    };
+    state.records.unshift(newRecord);
+    hideLoading();
+    showToast('success', 'Record Created', `"${title}" has been saved to the database.`);
+    document.getElementById('data-form').reset();
+    document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
+    updateProfileStats();
+    navigate('history');
+  }, 600);
+}
+
+// ===== History Rendering (CRUD Read) =====
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const search = (document.getElementById('history-search')?.value || '').toLowerCase();
+  const sort = document.getElementById('history-sort')?.value || 'newest';
+
+  let filtered = state.records.filter(r => {
+    const matchCat = state.historyFilter === 'all' || r.category === state.historyFilter;
+    const matchSearch = r.title.toLowerCase().includes(search) || (r.description || '').toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+
+  // Sort
+  switch(sort) {
+    case 'newest': filtered.sort((a,b) => b.date.localeCompare(a.date)); break;
+    case 'oldest': filtered.sort((a,b) => a.date.localeCompare(b.date)); break;
+    case 'title': filtered.sort((a,b) => a.title.localeCompare(b.title)); break;
+    case 'value-high': filtered.sort((a,b) => b.value - a.value); break;
+    case 'value-low': filtered.sort((a,b) => a.value - b.value); break;
+  }
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-folder-open"></i><h3>No records found</h3><p>Create a new record or adjust your search filters.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => {
+    const cc = catColors[r.category] || catColors.Wellbeing;
+    return `
+      <div class="history-item">
+        <div class="hi-icon" style="background:${cc.bg};color:${cc.color}"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="hi-info">
+          <h4>${r.title}</h4>
+          <p><span style="color:${cc.color};font-weight:700">${r.category}</span> &middot; ${r.date} &middot; Value: ${r.value}</p>
+        </div>
+        <div class="hi-actions">
+          <button class="btn-icon edit" title="Edit" onclick="openEditModal(${r.id})"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon delete" title="Delete" onclick="openDeleteModal(${r.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterHistory() { renderHistory(); }
+
+function setHistoryFilter(cat, el) {
+  state.historyFilter = cat;
+  document.querySelectorAll('#history-filter-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderHistory();
+}
+
+// ===== CRUD Update =====
+function openEditModal(id) {
+  const record = state.records.find(r => r.id === id);
+  if (!record) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-title').value = record.title;
+  document.getElementById('edit-category').value = record.category;
+  document.getElementById('edit-value').value = record.value;
+  document.getElementById('edit-desc').value = record.description || '';
+  document.getElementById('edit-modal').classList.add('show');
+}
+
+function handleEditSubmit(e) {
+  e.preventDefault();
+  const id = parseInt(document.getElementById('edit-id').value);
+  const title = document.getElementById('edit-title').value.trim();
+  const category = document.getElementById('edit-category').value;
+  const value = parseFloat(document.getElementById('edit-value').value);
+  const desc = document.getElementById('edit-desc').value.trim();
+
+  if (title.length < 3 || isNaN(value)) {
+    showToast('error', 'Validation Error', 'Please check your inputs and try again.');
+    return;
+  }
+
+  showLoading();
+  setTimeout(() => {
+    const idx = state.records.findIndex(r => r.id === id);
+    if (idx !== -1) {
+      state.records[idx] = { ...state.records[idx], title, category, value, description: desc };
+    }
+    hideLoading();
+    closeModal();
+    renderHistory();
+    showToast('success', 'Record Updated', `"${title}" has been updated successfully.`);
+  }, 500);
+}
+
+// ===== CRUD Delete =====
+function openDeleteModal(id) {
+  document.getElementById('delete-id').value = id;
+  document.getElementById('delete-modal').classList.add('show');
+}
+
+function confirmDelete() {
+  const id = parseInt(document.getElementById('delete-id').value);
+  showLoading();
+  setTimeout(() => {
+    const record = state.records.find(r => r.id === id);
+    state.records = state.records.filter(r => r.id !== id);
+    hideLoading();
+    closeModal();
+    renderHistory();
+    updateProfileStats();
+    showToast('success', 'Record Deleted', record ? `"${record.title}" has been removed.` : 'Record has been removed.');
+  }, 500);
+}
+
+function closeModal() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+});
+
+// ===== Profile =====
+function handleProfileUpdate(e) {
+  e.preventDefault();
+  const name = document.getElementById('edit-name').value.trim();
+  const email = document.getElementById('edit-email').value.trim();
+
+  if (!validateEmail(email)) {
+    showToast('error', 'Invalid Email', 'Please enter a valid email address.');
+    return;
+  }
+
+  showLoading();
+  setTimeout(() => {
+    state.user.name = name;
+    state.user.email = email;
+    state.user.initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2);
+    document.getElementById('profile-name').textContent = name;
+    document.getElementById('profile-email').textContent = email;
+    document.getElementById('profile-avatar').textContent = state.user.initials;
+    document.getElementById('sidebar-name').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = state.user.initials;
+    document.getElementById('greeting-name').textContent = name.split(' ')[0];
+    hideLoading();
+    showToast('success', 'Profile Updated', 'Your profile information has been saved.');
+  }, 600);
+}
+
+function updateProfileStats() {
+  const el = document.getElementById('ps-records');
+  if (el) el.textContent = state.records.length;
+}
+
+// ===== Developer Reference Code =====
+function renderDevCode() {
+  // SQL Schema
+  document.getElementById('code-sql').textContent = `-- YouthAI Database Schema
+-- Run this in phpMyAdmin to create the database and tables
+
+CREATE DATABASE IF NOT EXISTS app_db;
+USE app_db;
+
+-- Users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    bio TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Records table (programs/activities/wellbeing data)
+CREATE TABLE records (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    category ENUM('Wellbeing','Career','Academic','Sports','Volunteering') NOT NULL,
+    date DATE NOT NULL,
+    value FLOAT DEFAULT 0,
+    description TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Programs table (university events/programs)
+CREATE TABLE programs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    category ENUM('Wellbeing','Career','Academic','Sports','Volunteering') NOT NULL,
+    date DATE NOT NULL,
+    time VARCHAR(20) DEFAULT NULL,
+    location VARCHAR(200) DEFAULT NULL,
+    description TEXT DEFAULT NULL,
+    spots INT DEFAULT 0,
+    registered INT DEFAULT 0,
+    image_url VARCHAR(500) DEFAULT NULL,
+    created_by INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Chat history table
+CREATE TABLE chat_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    role ENUM('user','ai') NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Insert sample admin user (password: admin123 - bcrypt hash)
+INSERT INTO users (name, email, password) VALUES
+('Admin User', 'admin@youthai.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');`;
+
+  // db.php
+  document.getElementById('code-db').textContent = `<?php
+// config/db.php - Database Connection (PDO with prepared statements)
+session_start();
+
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'app_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+
+try {
+    $pdo = new PDO(
+        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+    exit;
+}
+
+// Helper: JSON response
+function jsonResponse($data, $code = 200) {
+    http_response_code($code);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+// Helper: Require auth
+function requireAuth() {
+    if (empty($_SESSION['user_id'])) {
+        jsonResponse(['success' => false, 'message' => 'Unauthorized'], 401);
+    }
+}
+?>`;
+
+  // login.php
+  document.getElementById('code-login').textContent = `<?php
+// auth/login.php
+session_start();
+require_once '../config/db.php';
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+ $email = trim($_POST['email'] ?? '');
+ $password = $_POST['password'] ?? '';
+
+// Backend validation
+if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    jsonResponse(['success' => false, 'message' => 'Valid email is required']);
+}
+if (empty($password) || strlen($password) < 6) {
+    jsonResponse(['success' => false, 'message' => 'Password must be at least 6 characters']);
+}
+
+// Prepared statement to prevent SQL injection
+ $stmt = $pdo->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
+ $stmt->execute([$email]);
+ $user = $stmt->fetch();
+
+if (!$user || !password_verify($password, $user['password'])) {
+    jsonResponse(['success' => false, 'message' => 'Invalid email or password']);
+}
+
+// Set session
+ $_SESSION['user_id'] = $user['id'];
+ $_SESSION['user_name'] = $user['name'];
+ $_SESSION['user_email'] = $user['email'];
+
+jsonResponse([
+    'success' => true,
+    'message' => 'Login successful',
+    'user' => [
+        'id' => $user['id'],
+        'name' => $user['name'],
+        'email' => $user['email']
+    ]
+]);
+?>`;
+
+  // register.php
+  document.getElementById('code-register').textContent = `<?php
+// auth/register.php
+session_start();
+require_once '../config/db.php';
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+ $name = trim($_POST['name'] ?? '');
+ $email = trim($_POST['email'] ?? '');
+ $password = $_POST['password'] ?? '';
+ $confirm = $_POST['confirm'] ?? '';
+
+// Backend validation
+if (empty($name) || strlen($name) < 2) {
+    jsonResponse(['success' => false, 'message' => 'Name must be at least 2 characters']);
+}
+if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    jsonResponse(['success' => false, 'message' => 'Valid email is required']);
+}
+if (empty($password) || strlen($password) < 6) {
+    jsonResponse(['success' => false, 'message' => 'Password must be at least 6 characters']);
+}
+if ($password !== $confirm) {
+    jsonResponse(['success' => false, 'message' => 'Passwords do not match']);
+}
+
+// Check if email already exists (prepared statement)
+ $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+ $stmt->execute([$email]);
+if ($stmt->fetch()) {
+    jsonResponse(['success' => false, 'message' => 'Email already registered']);
+}
+
+// Hash password with bcrypt
+ $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+// Insert user (prepared statement)
+ $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+ $stmt->execute([$name, $email, $hashedPassword]);
+
+ $userId = $pdo->lastInsertId();
+
+// Set session
+ $_SESSION['user_id'] = $userId;
+ $_SESSION['user_name'] = $name;
+ $_SESSION['user_email'] = $email;
+
+jsonResponse([
+    'success' => true,
+    'message' => 'Registration successful',
+    'user' => ['id' => $userId, 'name' => $name, 'email' => $email]
+]);
+?>`;
+
+  // logout.php
+  document.getElementById('code-logout').textContent = `<?php
+// auth/logout.php
+session_start();
+ $_SESSION = [];
+session_destroy();
+header('Location: ../index.php');
+exit;
+?>`;
+
+  // create_api.php
+  document.getElementById('code-create-api').textContent = `<?php
+// api/create_api.php - Create a new record
+session_start();
+require_once '../config/db.php';
+requireAuth(); // Ensure user is logged in
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+ $title = trim($_POST['title'] ?? '');
+ $category = $_POST['category'] ?? '';
+ $date = $_POST['date'] ?? '';
+ $value = floatval($_POST['value'] ?? 0);
+ $description = trim($_POST['description'] ?? '');
+ $userId = $_SESSION['user_id'];
+
+// Validation
+ $allowedCategories = ['Wellbeing', 'Career', 'Academic', 'Sports', 'Volunteering'];
+if (empty($title) || strlen($title) < 3) {
+    jsonResponse(['success' => false, 'message' => 'Title must be at least 3 characters']);
+}
+if (!in_array($category, $allowedCategories)) {
+    jsonResponse(['success' => false, 'message' => 'Invalid category']);
+}
+if (empty($date)) {
+    jsonResponse(['success' => false, 'message' => 'Date is required']);
+}
+if (!is_numeric($value)) {
+    jsonResponse(['success' => false, 'message' => 'Value must be a number']);
+}
+
+// Insert using prepared statement
+ $stmt = $pdo->prepare("
+    INSERT INTO records (user_id, title, category, date, value, description)
+    VALUES (?, ?, ?, ?, ?, ?)
+");
+ $stmt->execute([$userId, $title, $category, $date, $value, $description]);
+
+ $id = $pdo->lastInsertId();
+
+jsonResponse([
+    'success' => true,
+    'message' => 'Record created successfully',
+    'record' => [
+        'id' => $id,
+        'title' => $title,
+        'category' => $category,
+        'date' => $date,
+        'value' => $value,
+        'description' => $description
+    ]
+], 201);
+?>`;
+
+  // read_api.php
+  document.getElementById('code-read-api').textContent = `<?php
+// api/read_api.php - Fetch records for the logged-in user
+session_start();
+require_once '../config/db.php';
+requireAuth();
+
+header('Content-Type: application/json');
+
+ $userId = $_SESSION['user_id'];
+ $category = $_GET['category'] ?? '';
+ $search = $_GET['search'] ?? '';
+ $sort = $_GET['sort'] ?? 'newest';
+ $page = max(1, intval($_GET['page'] ?? 1));
+ $limit = 20;
+ $offset = ($page - 1) * $limit;
+
+// Build query dynamically with prepared statements
+ $where = ["user_id = ?"];
+ $params = [$userId];
+
+if (!empty($category) && in_array($category, ['Wellbeing','Career','Academic','Sports','Volunteering'])) {
+    $where[] = "category = ?";
+    $params[] = $category;
+}
+if (!empty($search)) {
+    $where[] = "(title LIKE ? OR description LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+}
+
+ $whereClause = implode(" AND ", $where);
+
+// Sorting
+ $orderMap = [
+    'newest' => 'created_at DESC',
+    'oldest' => 'created_at ASC',
+    'title' => 'title ASC',
+    'value-high' => 'value DESC',
+    'value-low' => 'value ASC'
+];
+ $orderBy = $orderMap[$sort] ?? 'created_at DESC';
+
+// Count total for pagination
+ $countStmt = $pdo->prepare("SELECT COUNT(*) as total FROM records WHERE $whereClause");
+ $countStmt->execute($params);
+ $total = $countStmt->fetch()['total'];
+
+// Fetch records
+ $paramsWithLimit = array_merge($params, [$limit, $offset]);
+ $stmt = $pdo->prepare("SELECT * FROM records WHERE $whereClause ORDER BY $orderBy LIMIT ? OFFSET ?");
+ $stmt->execute($paramsWithLimit);
+ $records = $stmt->fetchAll();
+
+jsonResponse([
+    'success' => true,
+    'records' => $records,
+    'total' => $total,
+    'page' => $page,
+    'pages' => ceil($total / $limit)
+]);
+?>`;
+
+  // update_api.php
+  document.getElementById('code-update-api').textContent = `<?php
+// api/update_api.php - Update an existing record
+session_start();
+require_once '../config/db.php';
+requireAuth();
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+ $id = intval($_POST['id'] ?? 0);
+ $userId = $_SESSION['user_id'];
+ $title = trim($_POST['title'] ?? '');
+ $category = $_POST['category'] ?? '';
+ $value = floatval($_POST['value'] ?? 0);
+ $description = trim($_POST['description'] ?? '');
+
+if ($id <= 0) {
+    jsonResponse(['success' => false, 'message' => 'Valid record ID is required']);
+}
+if (empty($title) || strlen($title) < 3) {
+    jsonResponse(['success' => false, 'message' => 'Title must be at least 3 characters']);
+}
+
+// Verify ownership before update
+ $check = $pdo->prepare("SELECT id FROM records WHERE id = ? AND user_id = ?");
+ $check->execute([$id, $userId]);
+if (!$check->fetch()) {
+    jsonResponse(['success' => false, 'message' => 'Record not found or unauthorized'], 404);
+}
+
+// Update using prepared statement
+ $stmt = $pdo->prepare("
+    UPDATE records SET title = ?, category = ?, value = ?, description = ?
+    WHERE id = ? AND user_id = ?
+");
+ $stmt->execute([$title, $category, $value, $description, $id, $userId]);
+
+jsonResponse([
+    'success' => true,
+    'message' => 'Record updated successfully',
+    'record' => ['id' => $id, 'title' => $title, 'category' => $category, 'value' => $value]
+]);
+?>`;
+
+  // delete_api.php
+  document.getElementById('code-delete-api').textContent = `<?php
+// api/delete_api.php - Delete a record
+session_start();
+require_once '../config/db.php';
+requireAuth();
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
+}
+
+ $id = intval($_POST['id'] ?? 0);
+ $userId = $_SESSION['user_id'];
+
+if ($id <= 0) {
+    jsonResponse(['success' => false, 'message' => 'Valid record ID is required']);
+}
+
+// Verify ownership before delete
+ $check = $pdo->prepare("SELECT id, title FROM records WHERE id = ? AND user_id = ?");
+ $check->execute([$id, $userId]);
+ $record = $check->fetch();
+
+if (!$record) {
+    jsonResponse(['success' => false, 'message' => 'Record not found or unauthorized'], 404);
+}
+
+// Delete using prepared statement
+ $stmt = $pdo->prepare("DELETE FROM records WHERE id = ? AND user_id = ?");
+ $stmt->execute([$id, $userId]);
+
+jsonResponse([
+    'success' => true,
+    'message' => 'Record deleted successfully',
+    'deleted' => ['id' => $id, 'title' => $record['title']]
+]);
+?>`;
+}
+</script>
+</body>
+</html>
