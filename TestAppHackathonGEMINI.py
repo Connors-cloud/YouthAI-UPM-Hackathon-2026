@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import random
 import threading
 import queue
+import os
 
 # ════════════════════════════════════════════════════════════════
 # CHANGE 1 OF 4: Replace OpenAI import with Gemini
@@ -230,8 +231,8 @@ class ChatEngine:
     """Handles AI responses — Google Gemini API when available, local fallback otherwise."""
 
     def __init__(self):
-        # ⬇️ REPLACE with your actual Gemini API key
-        self.api_key = "AIzaSyC18kxQ5UaP0WCMl8rNp0-W1_matWGNdq4"
+        # Keep credentials outside source control; the profile field also accepts a key.
+        self.api_key = os.getenv("GEMINI_API_KEY", "").strip()
         self.model_name = "gemini-3-flash-preview"          # Gemini model name
         self.response_queue = queue.Queue()
         self._typing_active = False
