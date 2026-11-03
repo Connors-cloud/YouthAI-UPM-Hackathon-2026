@@ -70,3 +70,18 @@ This is a development setup. For production:
 - Implement password hashing (bcrypt)
 - Use HTTPS
 - Add input validation and sanitization
+
+## Gemini API key configuration
+
+The desktop Gemini app (`TestAppHackathonGEMINI.py`) reads `GEMINI_API_KEY` from the process environment. If it is unset, the app uses local fallback responses; you can also enter a key in the Profile API Settings for the current session.
+
+Set the variable locally before starting the app. Do not put a real key in Python, HTML, documentation, or Git history. The existing `.gitignore` excludes `.env` files; the desktop app does not load them automatically.
+
+```bash
+read -rsp "Gemini API key: " GEMINI_API_KEY; echo
+export GEMINI_API_KEY
+python TestAppHackathonGEMINI.py
+unset GEMINI_API_KEY
+```
+
+If a key has been exposed, revoke it in its Google Cloud project (or Google AI Studio) and replace it in the environments that use it. Removing it from the latest source does not remove it from old commits or revoke it.
